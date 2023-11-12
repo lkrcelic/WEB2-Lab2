@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Info</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<div class="container">
+    <h1>User Information</h1>
+
+    <div class="user-info" th:if="${isUser} or ${isAdmin}">
+        <h2>Logged in as</h2>
+        <p th:text="${user}"></p>
+        <h2>User Address</h2>
+        <p> Unska ulica 3</p>
+    </div>
+
+    <div class="admin-info" th:if="${isAdmin}">
+        <h2>Admin Bank Account Number</h2>
+        <p>HR01221313124</p>
+    </div>
+</div>
+
+</body>
+</html>

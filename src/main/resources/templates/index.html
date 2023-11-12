@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HOME</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+</head>
+<body>
+<div class="container">
+    <h1>XSS</h1>
+    <a th:href="@{/query}">XSS</a>
+
+    <h1>Broken Access Control</h1>
+    <a th:href="@{/user-info}">User info</a>
+    <a th:href="@{/user/company-info}">Company info as user</a>
+    <a th:href="@{/admin/company-info}">Company info as admin</a>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <a th:href="@{/logout}">Logout</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Form</title>
+    <link rel="stylesheet" th:href="@{/css/query.css}" />
+
+</head>
+
+<body>
+
+    <h1>Cross-site scripting (XSS) example</h1>
+
+    <label for="sanitize">Sanitize Input:</label>
+    <input type="checkbox" id="sanitize" name="sanitize" />
+    <br/>
+
+    <h2>Search Form with GET</h2>
+    <form method="get" action="/search" id="searchForm" onsubmit="sanitizeInput()">
+        <label for="query">Query:</label>
+        <input type="text" id="query" name="query" />
+        <button type="submit">Search</button>
+    </form>
+
+    <br/>
+
+    <div id="queryResultBox">
+        Search results for:
+        <span id="queryResult" th:utext="${query}"></span>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <h2>Search Form with POST</h2>
+    <form method="POST" action="/search" id="searchForm2">
+        <label for="query">Query:</label>
+        <input type="text" id="query2" name="query" />
+        <button onsubmit="handleFormSubmit(e)" type="submit">Search</button>
+    </form>
+
+    <br/>
+
+    <div id="queryResultBox2">
+        Search results for:
+        <span id="queryResult2" th:utext="${query2}"></span>
+    </div>
+
+
+    <script>
+        const sanitizeCheckbox = document.getElementById("sanitize");
+        const queryResult = document.getElementById("queryResult");
+
+        sanitizeCheckbox.addEventListener("change", function () {
+            if (sanitizeCheckbox.checked) {
+                queryResult.setAttribute("th:text", "${query}");
+                queryResult.removeAttribute("th:utext");
+            } else {
+                queryResult.setAttribute("th:utext", "${query}");
+                queryResult.removeAttribute("th:text");
+            }
+        });
+
+        const usePost = document.getElementById("usePost");
+        const searchForm = document.getElementById("searchForm");
+
+        usePost.addEventListener("change", function () {
+            if (usePost.checked) {
+                searchForm.setAttribute("method", "POST");
+            } else {
+                searchForm.setAttribute("method", "GET");
+            }
+        });
+
+        function sanitizeInput() {
+            const queryInput = document.getElementById("query");
+            const sanitizeCheckbox = document.getElementById("sanitize");
+
+            if (sanitizeCheckbox.checked) {
+                // Sanitize the input (you can use your preferred sanitization library)
+                queryInput.value = sanitize(queryInput.value);
+            }
+        }
+
+        function sanitize(input) {
+            // Implement your custom or use a library for sanitization here
+            // Example: Replace HTML tags with empty strings to remove them
+            return input.replace(/<[^>]*>/g, "");
+        }
+
+        // POST METHOD
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            let queryValue = document.getElementById('query2').value;
+            let data = { query: queryValue };
+
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Success:', data);
+                // Handle the response data
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+    </script>
+</body>
+</html>
